@@ -1,9 +1,9 @@
 """fetch 階段：取得法規原始內容。
 
 來源優先序（皆可離線重跑）：
-1. data/fixtures/{law_code}.txt （已版控的測試樣本，離線可用）
-2. data/raw/{law_code}.html      （HTTP 抓取快取）
-3. 線上抓取 law.moj.gov.tw       （--refresh 或無快取時）
+1. data/raw/{law_code}.html      （HTTP 抓取快取；--refresh 後走真實全文）
+2. data/fixtures/{law_code}.txt （已版控測試樣本；無快取時離線可用）
+3. 線上抓取 law.moj.gov.tw       （--refresh 或兩者皆無時）
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from __future__ import annotations
 import datetime
 import os
 
-_UA = "building-law-etl/0.1 (research; contact: 富品盃 team)"
+_UA = "building-law-etl/0.1 (research; contact: fupin-cup-team)"
 
 
 def fetch_raw(cfg: dict, base_dir: str = ".", refresh: bool = False) -> tuple[str, str]:
@@ -20,11 +20,11 @@ def fetch_raw(cfg: dict, base_dir: str = ".", refresh: bool = False) -> tuple[st
     fixture = os.path.join(base_dir, "data", "fixtures", f"{law_code}.txt")
     cache = os.path.join(base_dir, "data", "raw", f"{law_code}.html")
 
-    if not refresh and os.path.exists(fixture):
-        with open(fixture, encoding="utf-8") as f:
-            return f.read(), _today()
     if not refresh and os.path.exists(cache):
         with open(cache, encoding="utf-8") as f:
+            return f.read(), _today()
+    if not refresh and os.path.exists(fixture):
+        with open(fixture, encoding="utf-8") as f:
             return f.read(), _today()
 
     html = _http_get(cfg["official_url"])
@@ -36,8 +36,16 @@ def fetch_raw(cfg: dict, base_dir: str = ".", refresh: bool = False) -> tuple[st
 
 def _http_get(url: str) -> str:
     import requests
+    import urllib3
 
-    resp = requests.get(url, headers={"User-Agent": _UA}, timeout=30)
+    # law.moj.gov.tw 憑證鏈在部分環境會 SSL 驗證失敗；仍只連官方一手來源。
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    resp = requests.get(
+        url,
+        headers={"User-Agent": _UA},
+        timeout=60,
+        verify=False,
+    )
     resp.raise_for_status()
     resp.encoding = resp.apparent_encoding or "utf-8"
     return resp.text
