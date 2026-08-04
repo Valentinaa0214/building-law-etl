@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://building-law-etl.local/schemas/rule_spec_v0.json",
+  "title": "RuleSpecV0",
+  "description": "條文→可執行規則草稿（LLM 抽取輸出）。僅 active 可進 Rule Engine。",
+  "type": "object",
+  "required": [
+    "rule_id",
+    "law_code",
+    "law_name",
+    "article",
+    "version",
+    "extractable",
+    "review_status",
+    "confidence",
+    "source_quote"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]+(-[A-Z0-9]+)+$",
+      "description": "穩定 ID，例如 BTR-EVAC-EXIT-WIDTH-001"
+    },
+    "law_code": { "type": "string", "minLength": 1 },
+    "law_name": { "type": "string", "minLength": 1 },
+    "article": {
+      "type": "string",
+      "description": "flno，例如 92 或 46-1"
+    },
+    "article_ref": {
+      "type": ["string", "null"],
+      "description": "可追溯項次，例如 第92條第1項第1款"
+    },
+    "version": {
+      "type": "string",
+      "description": "法規 amend_date（YYYY-MM-DD）"
+    },
+    "extractable": {
+      "type": "boolean",
+      "description": "是否可抽成數值/可執行規則；定義性、刪除條文為 false"
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "building_use": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "用途類組，如 A-1、D-3、office"
+        },
+        "conditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "適用條件，如 floors>=6、corridor.both_sides_habitable"
+        }
+      }
+    },
+    "target": {
+      "type": ["string", "null"],
+      "description": "量測目標，如 exit.width_mm、corridor.width_mm、evac.walking_distance_m"
+    },
+    "operator": {
+      "type": ["string", "null"],
+      "enum": [">=", "<=", ">", "<", "==", "!=", null]
+    },
+    "threshold": {
+      "type": ["number", "null"]
+    },
+    "unit": {
+      "type": ["string", "null"],
+      "enum": ["mm", "m", "cm", "sqm", "count", "ratio", null]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "exceptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "evidence_required": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "source_quote": {
+      "type": "string",
+      "minLength": 1,
+      "description": "原文片段，供人工覆核"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "uncertain_fields": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "抽取不確定的欄位路徑；非空時應為 review_required"
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["draft", "review_required", "reviewed", "active", "rejected"],
+      "description": "draft→review_required→reviewed→active；只有 active 進引擎"
+    },
+    "notes": {
+      "type": ["string", "null"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "extractable": { "const": true } },
+        "required": ["extractable"]
+      },
+      "then": {
+        "required": ["target", "operator", "threshold", "unit"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "uncertain_fields": {
+            "type": "array",
+            "minItems": 1
+          }
+        },
+        "required": ["uncertain_fields"]
+      },
+      "then": {
+        "properties": {
+          "review_status": { "const": "review_required" }
+        }
+      }
+    }
+  ]
+}

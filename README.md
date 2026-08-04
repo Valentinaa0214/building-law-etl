@@ -75,3 +75,47 @@ pytest -q
 `content_hash` 只依條文內容（不含 `fetch_date`），供版本 diff 與重跑一致性檢查。
 
 > 來源清單與版本欄位規範見 Notion：`建立官方法規來源清單與版本欄位`。
+
+## 條文 → Rule Spec v0（LLM / heuristic 抽取）
+
+第二階段：把 ETL 後的條文抽成可覆核的規則草稿。
+
+| 交付物 | 路徑 |
+| --- | --- |
+| JSON Schema | `schemas/rule_spec_v0.json` |
+| Prompt | `prompts/extract_rule_spec.md` |
+| 抽取 CLI | `python extract_rules.py --law-json data/output/D0070115.json --flnos 89,...,103` |
+| 人工覆核表 | `data/output/rules/*_review.csv`（gitignore）|
+| Gold 評測集（20 條）| `data/gold/rule_extract_gold_v0.json` |
+| 評測 | `python eval_extract.py --pred ... --gold ...` |
+
+```bash
+# 預設 heuristic（離線可重現）；有 OPENAI_API_KEY 可用 --provider openai
+python extract_rules.py --law-json data/output/D0070115.json \
+  --flnos 89,89-1,90,90-1,91,92,93,94,95,96,96-1,97,97-1,98,99,99-1,100,101,102,103
+
+python eval_extract.py \
+  --pred data/output/rules/D0070115_heuristic_rules.json \
+  --gold data/gold/rule_extract_gold_v0.json
+```
+
+不確定欄位會寫入 `uncertain_fields`，並強制 `review_status=review_required`。
+覆核流程：`draft/review_required → reviewed → active`（只有 active 進 Rule Engine）。
+
+### MVP active 規則包（Rule Engine 載入）
+
+| 檔案 | 說明 |
+| --- | --- |
+| `data/mvp/mvp_rules_active_v0.json` | 11 條 active 規則（§90/91/92/93/95）|
+| `data/mvp/mvp_triage_v0.json` | 37→11 篩選決策 |
+| `docs/rule_engine_interface.md` | Rule Engine 接口說明（給陳芊宇）|
+
+### OpenAI（可選）
+
+```bash
+cp .env.example .env   # 填入 OPENAI_API_KEY，勿 commit
+python extract_rules.py --law-json data/output/D0070115.json \
+  --flnos 90,91,92,93,95 --provider openai
+```
+
+20 條評測約 **$0.01–0.05**（gpt-4o-mini）；預設 `heuristic` 不需 API。

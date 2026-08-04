@@ -1,0 +1,228 @@
+{
+  "description": "人工標註評測集 v0｜建築設計施工編第四章 §89–103（20 條）。每條至少一筆 gold rule，用於評測抽取欄位與 review_status 約束。",
+  "law_code": "D0070115",
+  "annotator": "黃蘭榛",
+  "annotated_at": "2026-08-04",
+  "rules": [
+    {
+      "rule_id": "GOLD-89-SCOPE",
+      "article": "89",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "適用範圍條款，無單一數值門檻"
+    },
+    {
+      "rule_id": "GOLD-89-1-DEL",
+      "article": "89-1",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "刪除條文"
+    },
+    {
+      "rule_id": "GOLD-90-WIDTH",
+      "article": "90",
+      "extractable": true,
+      "target": "exit.width_mm",
+      "operator": ">=",
+      "threshold": 1200,
+      "unit": "mm",
+      "review_status": "draft",
+      "notes": "避難層出入口寬度不得小於 1.2 公尺"
+    },
+    {
+      "rule_id": "GOLD-90-1-FORMULA",
+      "article": "90-1",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "總寬度依面積計算值，非固定門檻"
+    },
+    {
+      "rule_id": "GOLD-91-MIN-WIDTH",
+      "article": "91",
+      "extractable": true,
+      "target": "exit.width_mm",
+      "operator": ">=",
+      "threshold": 1200,
+      "unit": "mm",
+      "review_status": "draft",
+      "notes": "每處出入口寬度不得小於 1.2 公尺"
+    },
+    {
+      "rule_id": "GOLD-92-TABLE",
+      "article": "92",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "走廊寬度依用途表分檔，需人工拆成多條規則"
+    },
+    {
+      "rule_id": "GOLD-93-WALK-30",
+      "article": "93",
+      "extractable": true,
+      "target": "evac.walking_distance_m",
+      "operator": "<=",
+      "threshold": 30,
+      "unit": "m",
+      "review_status": "review_required",
+      "notes": "A/B/D-1 組步行距離 ≤30m；用途條件需人工確認"
+    },
+    {
+      "rule_id": "GOLD-94-REF",
+      "article": "94",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "引用前條距離，本身無獨立數值"
+    },
+    {
+      "rule_id": "GOLD-95-STAIR-COUNT",
+      "article": "95",
+      "extractable": true,
+      "target": "stair.count",
+      "operator": ">=",
+      "threshold": 2,
+      "unit": "count",
+      "review_status": "review_required",
+      "notes": "八層以上等應設二座以上直通樓梯"
+    },
+    {
+      "rule_id": "GOLD-96-SAFETY-STAIR",
+      "article": "96",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "安全梯構造升級條件，多分支"
+    },
+    {
+      "rule_id": "GOLD-96-1-EXEMPT",
+      "article": "96-1",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "例外豁免條款"
+    },
+    {
+      "rule_id": "GOLD-97-CONSTRUCTION",
+      "article": "97",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "安全梯構造細節，需拆項"
+    },
+    {
+      "rule_id": "GOLD-97-1-NO-VIA",
+      "article": "97-1",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "禁止經由他座特別安全梯進入"
+    },
+    {
+      "rule_id": "GOLD-98-STAIR-WIDTH",
+      "article": "98",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "總寬度依計算值"
+    },
+    {
+      "rule_id": "GOLD-99-ROOF",
+      "article": "99",
+      "extractable": true,
+      "target": "geometry.width_mm",
+      "operator": ">=",
+      "threshold": 6000,
+      "unit": "mm",
+      "review_status": "review_required",
+      "notes": "屋頂避難平臺任一邊邊長不得小於六公尺；target 建議人工改為 roof_refuge.edge_m"
+    },
+    {
+      "rule_id": "GOLD-99-1-COMPART",
+      "article": "99-1",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "防火區劃與安全梯連接要求"
+    },
+    {
+      "rule_id": "GOLD-100-SMOKE",
+      "article": "100",
+      "extractable": true,
+      "target": "geometry.width_mm",
+      "operator": ">",
+      "threshold": 500000,
+      "unit": "mm",
+      "review_status": "review_required",
+      "notes": "樓地板面積超過 500 平方公尺；單位應為 sqm，gold 標為需覆核"
+    },
+    {
+      "rule_id": "GOLD-101-SMOKE-EQ",
+      "article": "101",
+      "extractable": true,
+      "target": "smoke.horizontal_distance_m",
+      "operator": "<=",
+      "threshold": 45,
+      "unit": "m",
+      "review_status": "draft",
+      "notes": "至排煙口水平距離不得超過四十五公尺"
+    },
+    {
+      "rule_id": "GOLD-102-WINDOW",
+      "article": "102",
+      "extractable": true,
+      "target": "geometry.width_mm",
+      "operator": ">=",
+      "threshold": 2000,
+      "unit": "mm",
+      "review_status": "review_required",
+      "notes": "窗戶面積不得小於二平方公尺；應為 sqm，需覆核"
+    },
+    {
+      "rule_id": "GOLD-103-DEL",
+      "article": "103",
+      "extractable": false,
+      "target": null,
+      "operator": null,
+      "threshold": null,
+      "unit": null,
+      "review_status": "review_required",
+      "notes": "刪除條文"
+    }
+  ]
+}

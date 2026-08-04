@@ -11,5 +11,8 @@ data/raw/
 data/output/
 logs/
 
+# Secrets
+.env
+
 # OS / editor
 .DS_Store
